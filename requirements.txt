@@ -1,0 +1,5 @@
+jedi==0.15.2
+jupyter==1.0.0
+matplotlib==3.3.4
+numpy==1.19.5
+opencv-python==4.5.1.48
