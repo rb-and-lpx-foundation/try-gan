@@ -11,4 +11,4 @@ def normalize_to_floats(image):
 
 
 def normal_to_bytes(image):
-    return (image.copy() * 255).astype(np.uint8)
+    return (image.copy() * 255.5).astype(np.uint8)
