@@ -170,5 +170,6 @@ class TestPerturb(unittest.TestCase):
         image = f.make_normalized_image()
         image = perturb.gauss_noise(image, r=r, sigma=sigma)
         perturb.salt_and_pepper(image, r=r, s_vs_p=s_vs_p, amount=amount)
+        normalize.clip_floats(image)
         expected = normalize.normal_to_bytes(image)
         self.assertAlmostEqual(0, norm(actual - expected))

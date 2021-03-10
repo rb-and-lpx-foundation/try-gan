@@ -69,6 +69,7 @@ class Normalizer(Perturber):
 
 class Discretizer(Perturber):
     def perturb(self, image):
+        normalize.clip_floats(image)
         return normalize.normal_to_bytes(image)
 
 
