@@ -2,6 +2,7 @@
 import unittest
 
 from try_gan.tests.test_example import TestExample
+from try_gan.tests.test_normalize import TestNormalize
 
 
 class CountSuite(object):
@@ -19,6 +20,7 @@ def suite():
     s = CountSuite()
 
     s.add(TestExample)
+    s.add(TestNormalize)
 
     return s.s
 
