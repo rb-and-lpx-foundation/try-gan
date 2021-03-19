@@ -142,7 +142,9 @@ class TestPerturb(unittest.TestCase):
         p = perturb.GaussPerturber(self.get_r(), sigma=sigma)
         actual = p.perturb(self.normalized)
 
-        expected = perturb.gauss_noise(self.normalized, self.get_r(), mu=0.0, sigma=sigma)
+        expected = perturb.gauss_noise(
+            self.normalized, self.get_r(), mu=0.0, sigma=sigma
+        )
         self.assertAlmostEqual(0, norm(actual - expected))
 
     def test_snp_perturber(self):
