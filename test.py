@@ -2,6 +2,7 @@
 import unittest
 
 from try_gan.tests.test_example import TestExample
+from try_gan.tests.test_image_processing import TestImageProcessing
 from try_gan.tests.test_normalize import TestNormalize
 from try_gan.tests.test_perturb import TestPerturb
 
@@ -21,6 +22,7 @@ def suite():
     s = CountSuite()
 
     s.add(TestExample)
+    s.add(TestImageProcessing)
     s.add(TestNormalize)
     s.add(TestPerturb)
 

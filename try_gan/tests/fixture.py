@@ -1,7 +1,25 @@
 import numpy as np
+import cv2
+import os
+from PIL import Image
+
+from try_gan.image_files import bgr2rgb
 
 
 class Fixture:
+    @property
+    def data_directory(self):
+        base_path = os.path.abspath(os.path.dirname(__file__))
+        return os.path.join(base_path, "test_data")
+
+    @property
+    def all_four(self):
+        return os.path.join(self.data_directory, "all_four")
+
+    @property
+    def concatenated(self):
+        return os.path.join(self.data_directory, "concatenated")
+
     def make_image(self):
         return np.array(
             [
@@ -174,3 +192,24 @@ class Fixture:
                 ],
             ]
         )
+
+    def make_digit(self, d, color, n=32):
+        s = str(d)
+        (w, h), baseline = cv2.getTextSize(s, cv2.FONT_HERSHEY_SIMPLEX, 1, 3)
+        x = (w - baseline) // 2
+        y = (n + h) // 2
+        image = np.zeros([n, n, 3], dtype=np.uint8)
+        image[:, :, :] = 255
+        cv2.putText(image, s, (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1, color, 3)
+        return bgr2rgb(image)
+
+    def make_test_digits(self):
+        zero = self.make_digit(0, color=(0, 0, 0, 255))
+        one = self.make_digit(1, color=(0, 209, 80, 255))
+        two = self.make_digit(2, color=(209, 80, 0, 255))
+        three = self.make_digit(3, color=(80, 0, 209, 255))
+        return zero, one, two, three
+
+    def load_from_all_four(self, filename):
+        path = os.path.join(self.all_four, filename)
+        return Image.open(path)

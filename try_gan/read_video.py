@@ -1,5 +1,7 @@
 import cv2
 
+from try_gan.image_files import bgr2rgb
+
 
 def frames(video):
     vidcap = cv2.VideoCapture(video)
@@ -7,7 +9,7 @@ def frames(video):
     while success:
         success, frame = vidcap.read()
         if success:
-            yield cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            yield bgr2rgb(frame)
 
 
 def perturbed_frames(frames, perturber):

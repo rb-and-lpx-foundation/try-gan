@@ -5,6 +5,7 @@ import numpy as np
 
 from try_gan import normalize
 
+
 class TestNormalize(unittest.TestCase):
     def setUp(self):
         pass
