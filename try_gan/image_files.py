@@ -22,4 +22,3 @@ def split_left_right(image):
     left = image[:, :w, :]
     right = image[:, w:, :]
     return left, right
-

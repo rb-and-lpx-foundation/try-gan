@@ -1,7 +1,6 @@
 import unittest
 
 from numpy.linalg import norm
-import numpy as np
 import cv2
 import os
 
