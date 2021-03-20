@@ -5,6 +5,7 @@ from try_gan.tests.test_example import TestExample
 from try_gan.tests.test_image_processing import TestImageProcessing
 from try_gan.tests.test_normalize import TestNormalize
 from try_gan.tests.test_perturb import TestPerturb
+from try_gan.tests.test_read_video import TestReadVideo
 
 
 class CountSuite(object):
@@ -25,6 +26,7 @@ def suite():
     s.add(TestImageProcessing)
     s.add(TestNormalize)
     s.add(TestPerturb)
+    s.add(TestReadVideo)
 
     return s.s
 
