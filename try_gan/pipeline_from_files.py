@@ -1,5 +1,7 @@
 # Modified from https://github.com/tensorflow/docs/blob/master/site/en/tutorials/generative/pix2pix.ipynb
 
+import os
+
 import tensorflow as tf
 
 
@@ -134,10 +136,12 @@ class JpgFilePipeline(FilePipeline):
         FilePipeline.__init__(self, path)
 
     def _train_filenames(self):
-        return self.PATH + "train/*.jpg"
+        path = os.path.join(self.PATH, "train")
+        return os.path.join(path, "*.jpg")
 
     def _test_filenames(self):
-        return self.PATH + "test/*.jpg"
+        path = os.path.join(self.PATH, "test")
+        return os.path.join(path, "*.jpg")
 
     def load_raw(self, image_file):
         image = tf.io.read_file(image_file)

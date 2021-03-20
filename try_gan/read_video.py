@@ -1,10 +1,10 @@
 import cv2
+import numpy as np
 
 from try_gan.image_files import bgr2rgb
 
 
-def frames(video):
-    vidcap = cv2.VideoCapture(video)
+def frames(vidcap):
     success, image = vidcap.read()
     while success:
         success, frame = vidcap.read()
@@ -15,3 +15,21 @@ def frames(video):
 def perturbed_frames(frames, perturber):
     for frame in frames:
         yield perturber.perturb(frame), frame
+
+
+def open_video(video):
+    vidcap = cv2.VideoCapture(video)
+    frame_count = int(vidcap.get(cv2.CAP_PROP_FRAME_COUNT))
+    return frame_count, frames(vidcap)
+
+
+def sample_from_generator(g, count, sample_count, r: np.random.RandomState):
+    indices = r.choice(count, size=sample_count, replace=False)
+    for i, x in enumerate(g):
+        if i in indices:
+            yield x
+
+
+def concatenated_frames(frames, perturber):
+    for perturned, frame in perturbed_frames(frames, perturber):
+        yield np.concatenate([perturned, frame], axis=1)
