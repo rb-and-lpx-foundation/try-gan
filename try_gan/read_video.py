@@ -10,6 +10,8 @@ def frames(vidcap):
         success, frame = vidcap.read()
         if success:
             yield bgr2rgb(frame)
+        else:
+            vidcap.release()
 
 
 def perturbed_frames(frames, perturber):
