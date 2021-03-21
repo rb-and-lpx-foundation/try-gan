@@ -31,5 +31,5 @@ def sample_from_generator(g, count, sample_count, r: np.random.RandomState):
 
 
 def concatenated_frames(frames, perturber):
-    for perturned, frame in perturbed_frames(frames, perturber):
-        yield np.concatenate([perturned, frame], axis=1)
+    for perturbed, frame in perturbed_frames(frames, perturber):
+        yield np.concatenate([frame, perturbed], axis=1)

@@ -8,15 +8,21 @@ from try_gan.pipeline_from_files import JpgFilePipeline as Pipeline
 
 
 class Framer:
-    r = np.random.RandomState(42)
-    sigma = 0.1
-    g = perturb.GaussPerturber(r, sigma=sigma)
-    s_vs_p = 0.3
-    amount = 0.1
-    snp = perturb.SNPPerturber(r, s_vs_p=s_vs_p, amount=amount)
-    ops = [perturb.Normalizer(), g, snp, perturb.Discretizer()]
-    p = perturb.CompositePerturber(ops)
-    video = "data/hiragana128.mov"
+    def __init__(self, video, r=None, p=None):
+        if r is None:
+            r = np.random.RandomState(42)
+        self.r = r
+
+        if p is None:
+            sigma = 0.1
+            g = perturb.GaussPerturber(r, sigma=sigma)
+            s_vs_p = 0.3
+            amount = 0.1
+            snp = perturb.SNPPerturber(r, s_vs_p=s_vs_p, amount=amount)
+            ops = [perturb.Normalizer(), g, snp, perturb.Discretizer()]
+            p = perturb.CompositePerturber(ops)
+        self.p = p
+        self.video = video
 
     def write_samples(self, path, n):
         frame_count, frames = read_video.open_video(self.video)
@@ -27,12 +33,10 @@ class Framer:
             image.save(filename)
 
 
-
 class VideoFramePipeline(Pipeline):
-    def __init__(self, path):
+    def __init__(self, path, framer):
         Pipeline.__init__(self, path)
-        self.framer = Framer()
-
+        self.framer = framer
 
     def make_train(self):
         path = os.path.join(self.PATH, "train")
