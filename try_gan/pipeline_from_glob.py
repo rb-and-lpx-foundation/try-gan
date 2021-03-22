@@ -14,7 +14,7 @@ def frames_from_glob(g):
     return len(names), g
 
 
-class GlobPipeline(Framer):
+class GlobFramer(Framer):
     def __init__(self, glob, r=None, p=None):
         Framer.__init__(self, r=r, p=p)
         self.glob = glob
