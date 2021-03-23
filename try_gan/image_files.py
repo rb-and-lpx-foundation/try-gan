@@ -11,6 +11,11 @@ def open_jpg(path):
     return np.array(Image.open(path))
 
 
+def save_image(image, path):
+    image = Image.fromarray(image)
+    image.save(path)
+
+
 def open_png(path):
     return np.array(Image.open(path))
 
