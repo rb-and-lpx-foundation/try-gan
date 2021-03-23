@@ -1,6 +1,8 @@
-import numpy as np
-from try_gan import normalize
 import cv2
+import numpy as np
+
+from try_gan import normalize
+from try_gan.image_files import make_square
 
 
 def gauss_noise(image, r: np.random.RandomState, mu=0.0, sigma=0.05):
@@ -114,3 +116,11 @@ class SquarePerturber(Perturber):
             p, q = random_rect(w, h, self.radius, self.r)
             cv2.rectangle(image, p, q, color=color, thickness=thickness)
         return image
+
+
+class ToSquarePerturber(Perturber):
+    def __init__(self, dim):
+        self.dim = dim
+
+    def perturb(self, image):
+        return make_square(image, self.dim)
