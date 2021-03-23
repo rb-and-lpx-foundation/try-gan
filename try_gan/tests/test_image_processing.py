@@ -75,3 +75,40 @@ class TestImageProcessing(unittest.TestCase):
         expected = self.three
         actual = right
         self.assertAlmostEqual(0, norm(expected - actual))
+
+    def test_compute_padding(self):
+        m, n = 5, 10
+        expected = 10
+        left, right, top, bottom = image_files.compute_square_padding(m, n)
+        self.assertEqual(expected, left + m + right)
+        self.assertEqual(expected, top + n + bottom)
+
+        m, n = 10, 5
+        expected = 10
+        left, right, top, bottom = image_files.compute_square_padding(m, n)
+        self.assertEqual(expected, left + m + right)
+        self.assertEqual(expected, top + n + bottom)
+
+        m, n = 8, 10
+        expected = 10
+        left, right, top, bottom = image_files.compute_square_padding(m, n)
+        self.assertEqual(expected, left + m + right)
+        self.assertEqual(expected, top + n + bottom)
+
+        m, n = 10, 8
+        expected = 10
+        left, right, top, bottom = image_files.compute_square_padding(m, n)
+        self.assertEqual(expected, left + m + right)
+        self.assertEqual(expected, top + n + bottom)
+
+        m, n = 10, 10
+        expected = 10
+        left, right, top, bottom = image_files.compute_square_padding(m, n)
+        self.assertEqual(expected, left + m + right)
+        self.assertEqual(expected, top + n + bottom)
+
+        m, n = 10, 10
+        expected = 10
+        left, right, top, bottom = image_files.compute_square_padding(m, n)
+        self.assertEqual(expected, left + m + right)
+        self.assertEqual(expected, top + n + bottom)
