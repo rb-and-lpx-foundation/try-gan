@@ -8,4 +8,5 @@ class VideoFramer(Framer):
         self.video = video
 
     def get_frames(self):
-        return read_video.open_video(self.video)
+        frame_count, _, frames = read_video.open_video(self.video)
+        return frame_count, frames
