@@ -22,7 +22,8 @@ def perturbed_frames(frames, perturber):
 def open_video(video):
     vidcap = cv2.VideoCapture(video)
     frame_count = int(vidcap.get(cv2.CAP_PROP_FRAME_COUNT))
-    return frame_count, frames(vidcap)
+    frame_rate = vidcap.get(cv2.CAP_PROP_FPS)
+    return frame_count, frame_rate, frames(vidcap)
 
 
 def sample_from_generator(g, count, sample_count, r: np.random.RandomState):
