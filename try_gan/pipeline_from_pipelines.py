@@ -8,11 +8,17 @@ class PipelinePipeline(Pipeline):
 
     @property
     def current(self):
-        return self.pipelines[i % len(self.pipelines)]
+        return self.pipelines[self.i % len(self.pipelines)]
+
+    def move_to_next(self):
+        self.i += 1
 
     def make_train(self):
-        self.i += 1
         return self.current.make_train()
 
     def make_test(self):
         return self.current.make_test()
+
+    def make_datasets(self):
+        self.move_to_next()
+        return Pipeline.make_datasets(self)
