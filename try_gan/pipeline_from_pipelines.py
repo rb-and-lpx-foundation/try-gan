@@ -13,12 +13,16 @@ class PipelinePipeline(Pipeline):
     def move_to_next(self):
         self.i += 1
 
-    def make_train(self):
+    def make_train(self, move_next=True):
+        if move_next:
+            self.move_to_next()
         return self.current.make_train()
 
-    def make_test(self):
+    def make_test(self, move_next=True):
+        if move_next:
+            self.move_to_next()
         return self.current.make_test()
 
     def make_datasets(self):
         self.move_to_next()
-        return Pipeline.make_datasets(self)
+        return self.make_train(move_next=False), self.make_test(move_next=False)
