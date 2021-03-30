@@ -71,7 +71,7 @@ class FramerPipeline(Pipeline):
         self.framer.write_samples(self.train_dir, self.train_sample_count)
         return Pipeline.make_train(self)
 
-    def make_test(self, force_refresh=False):
+    def make_test(self, force_refresh=True):
         if force_refresh:
             self.test_framer.write_samples(self.test_dir, self.test_sample_count)
         return Pipeline.make_test(self)
