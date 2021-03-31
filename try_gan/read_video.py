@@ -1,7 +1,8 @@
 import cv2
 import numpy as np
+from glob import glob
 
-from try_gan.image_files import bgr2rgb
+from try_gan.image_files import bgr2rgb, open_jpg
 from try_gan.perturb import Perturber
 
 
@@ -88,3 +89,15 @@ class VideoFrames(Frames):
         if self.in_use:
             self.vidcap.release()
             self.in_use = False
+
+
+class GlobFrames(Frames):
+    def __init__(self, g, fps, open_image_file=open_jpg):
+        names = glob(g)
+        names.sort()
+
+        def frames_from_glob():
+            for name in names:
+                yield open_image_file(name)
+
+        Frames.__init__(self, frames_from_glob(), len(names), fps)
