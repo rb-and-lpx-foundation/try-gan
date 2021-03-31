@@ -27,7 +27,7 @@ class Framer:
 class VideoFramer(Framer):
     def __init__(self, video_filename, r, p):
         self.video_filename = video_filename
-        Framer.__init__(r, p)
+        Framer.__init__(self, r, p)
 
     def fetch_frames(self):
         return read_video.VideoFrames(self.video_filename)
@@ -36,7 +36,7 @@ class VideoFramer(Framer):
 class GlobFramer(Framer):
     def __init__(self, glob, r, p):
         self.glob = glob
-        Framer.__init__(r, p)
+        Framer.__init__(self, r, p)
 
     def fetch_frames(self):
         return read_video.GlobFrames(self.glob)
