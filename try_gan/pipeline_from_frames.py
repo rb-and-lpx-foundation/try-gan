@@ -8,7 +8,8 @@ from try_gan.pipeline_from_files import JpgFilePipeline as Pipeline
 
 
 class Framer:
-    def __init__(self, r=None, p=None):
+    def __init__(self, frames: read_video.Frames, r=None, p=None):
+        self.frames = frames
         if r is None:
             r = np.random.RandomState(42)
         self.r = r
@@ -23,15 +24,8 @@ class Framer:
             p = perturb.CompositePerturber(ops)
         self.p = p
 
-    def get_frames(self):
-        raise NotImplementedError()
-
-    def cleaunup(self):
-        raise NotImplementedError()
-
     def write_samples(self, path, n):
-        frame_count, frames = self.get_frames()
-        sampler = read_video.sample_from_generator(frames, frame_count, n, self.r)
+        sampler = read_video.sample_from_generator(self.frames, frame_count, n, self.r)
         for i, frame in enumerate(read_video.concatenated_frames(sampler, self.p)):
             filename = os.path.join(path, "{}.jpg".format(i))
             image = Image.fromarray(frame)

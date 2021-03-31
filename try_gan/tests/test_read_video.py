@@ -33,7 +33,7 @@ class TestReadVideo(unittest.TestCase):
         g = self.make_generator()
         h = read_video.sample_from_generator(g(), 10, 3, np.random.RandomState(48))
         actual = list(h)
-        expected =  [4, 25, 49]
+        expected = [4, 25, 49]
         self.assertEqual(expected, actual)
 
         g = self.make_generator()
@@ -41,3 +41,17 @@ class TestReadVideo(unittest.TestCase):
         actual = list(h)
         expected = [4, 9, 16]
         self.assertEqual(expected, actual)
+
+        self.fail("incomplete test")
+
+    def test_frames_test_object(self):
+        self.fail("incomplete test")
+
+    def test_perturbed_frames(self):
+        self.fail("incomplete test")
+
+    def test_sampled_frames(self):
+        self.fail("incomplete test")
+
+    def test_frames_from_glob(self):
+        self.fail("incomplete test")
