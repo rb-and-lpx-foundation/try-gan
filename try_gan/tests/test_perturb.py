@@ -6,6 +6,7 @@ from numpy.linalg import norm
 from try_gan.tests.fixture import Fixture
 from try_gan import perturb
 from try_gan import normalize
+from try_gan.image_files import split_left_right
 
 
 class TestPerturb(unittest.TestCase):
@@ -174,4 +175,79 @@ class TestPerturb(unittest.TestCase):
         perturb.salt_and_pepper(image, r=r, s_vs_p=s_vs_p, amount=amount)
         normalize.clip_floats(image)
         expected = normalize.normal_to_bytes(image)
+        self.assertAlmostEqual(0, norm(actual - expected))
+
+    def test_concatenate_perturber(self):
+        image = self.image.copy()
+        # concatenate image with copy of image
+        copy_copy = perturb.ConcatenatePerturber(perturb.IdentityPerturber())
+        perturbed = copy_copy.perturb(image)
+        left, right = split_left_right(perturbed)
+        self.assertAlmostEqual(0, norm(left - self.image))
+        self.assertAlmostEqual(0, norm(right - self.image))
+
+        # concatenate image with blacked out image
+        copy_black = perturb.ConcatenatePerturber(perturb.BlackoutPerturber())
+        perturbed = copy_black.perturb(image)
+        left, right = split_left_right(perturbed)
+        self.assertAlmostEqual(0, norm(left - self.image))
+        self.assertAlmostEqual(0, norm(right))
+
+    def test_maybe_perturber(self):
+        r = np.random.RandomState(42)
+        make_black = [r.random() < 0.75 for _ in range(4)]
+        self.assertTrue(make_black[0])
+        self.assertFalse(make_black[1])
+        self.assertTrue(make_black[2])
+        self.assertTrue(make_black[3])
+
+        # make a perturber which will make image black 3 out of four times
+        image = self.image.copy()
+        p = perturb.MaybePerturber(
+            perturber=perturb.BlackoutPerturber(),
+            prob=0.75,
+            r=np.random.RandomState(42),
+        )
+        self.assertAlmostEqual(0, norm(p.perturb(image)))
+        self.assertAlmostEqual(0, norm(p.perturb(image) - self.image))
+        self.assertAlmostEqual(0, norm(p.perturb(image)))
+        self.assertAlmostEqual(0, norm(p.perturb(image)))
+
+    def test_to_square_perturber(self):
+        p = perturb.ToSquarePerturber(4)
+        image = self.image[2:4, 2:6, :]
+        self.assertEqual((2, 4, 3), image.shape)
+        actual = p.perturb(image)
+        self.assertEqual((4, 4, 3), actual.shape)
+        expected = np.array(
+            [
+                [[249, 249, 249], [213, 213, 213], [11, 11, 11], [2, 2, 2]],
+                [[252, 252, 252], [54, 54, 54], [2, 2, 2], [0, 0, 0]],
+                [[249, 249, 249], [213, 213, 213], [11, 11, 11], [2, 2, 2]],
+                [[252, 252, 252], [54, 54, 54], [2, 2, 2], [0, 0, 0]],
+            ],
+            dtype=np.uint8,
+        )
+        self.assertAlmostEqual(0, norm(actual - expected))
+
+    def test_blackout_perturber(self):
+        image = self.image.copy()
+        p = perturb.BlackoutPerturber()
+        black = p.perturb(image)
+
+        # want the original image unaltered
+        expected = self.image
+        actual = image
+        self.assertAlmostEqual(0, norm(actual - expected))
+
+        # want black image to have same shape and type as original, but only zero entries
+        self.assertEqual(image.shape, black.shape)
+        self.assertEqual(image.dtype, black.dtype)
+        self.assertAlmostEqual(0, norm(black))
+
+    def test_identity_perturber(self):
+        image = self.image.copy()
+        p = perturb.IdentityPerturber()
+        expected = self.image
+        actual = p.perturb(image)
         self.assertAlmostEqual(0, norm(actual - expected))

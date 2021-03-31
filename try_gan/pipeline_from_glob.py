@@ -1,7 +1,7 @@
 from glob import glob
 
 from try_gan import image_files
-from try_gan.framer import Framer
+from try_gan.pipeline_from_frames import Framer
 
 
 def frames_from_glob(g):

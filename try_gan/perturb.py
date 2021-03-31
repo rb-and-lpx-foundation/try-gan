@@ -124,3 +124,32 @@ class ToSquarePerturber(Perturber):
 
     def perturb(self, image):
         return make_square(image, self.dim)
+
+
+class ConcatenatePerturber(Perturber):
+    def __init__(self, perturber: Perturber):
+        self.perturber = perturber
+
+    def perturb(self, image):
+        perturbed = self.perturber.perturb(image)
+        return np.concatenate([image, perturbed], axis=1)
+
+class MaybePerturber(Perturber):
+    def __init__(self, perturber: Perturber, prob, r: np.random.RandomState):
+        self.perturber = perturber
+        self.prob = prob
+        self.r = r
+
+    def perturb(self, image):
+        if self.r.random() > self.prob:
+            return image
+        else:
+            return self.perturber.perturb(image)
+
+class BlackoutPerturber(Perturber):
+    def perturb(self, image):
+        return np.zeros_like(image)
+
+class IdentityPerturber(Perturber):
+    def perturb(self, image):
+        return image
