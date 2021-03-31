@@ -26,6 +26,9 @@ class Framer:
     def get_frames(self):
         raise NotImplementedError()
 
+    def cleaunup(self):
+        raise NotImplementedError()
+
     def write_samples(self, path, n):
         frame_count, frames = self.get_frames()
         sampler = read_video.sample_from_generator(frames, frame_count, n, self.r)
@@ -33,6 +36,7 @@ class Framer:
             filename = os.path.join(path, "{}.jpg".format(i))
             image = Image.fromarray(frame)
             image.save(filename)
+        self.cleaunup()
 
 
 class FramerPipeline(Pipeline):
