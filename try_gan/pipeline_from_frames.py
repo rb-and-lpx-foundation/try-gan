@@ -1,4 +1,3 @@
-import numpy as np
 from PIL import Image
 import os
 
@@ -8,29 +7,39 @@ from try_gan.pipeline_from_files import JpgFilePipeline as Pipeline
 
 
 class Framer:
-    def __init__(self, frames: read_video.Frames, r=None, p=None):
-        self.frames = frames
-        if r is None:
-            r = np.random.RandomState(42)
+    def __init__(self, r, p):
         self.r = r
+        self.p = perturb.ConcatenatePerturber(p)
 
-        if p is None:
-            sigma = 0.1
-            g = perturb.GaussPerturber(r, sigma=sigma)
-            s_vs_p = 0.3
-            amount = 0.1
-            snp = perturb.SNPPerturber(r, s_vs_p=s_vs_p, amount=amount)
-            ops = [perturb.Normalizer(), g, snp, perturb.Discretizer()]
-            p = perturb.CompositePerturber(ops)
-        self.p = p
+    def fetch_frames(self):
+        raise NotImplementedError()
 
     def write_samples(self, path, n):
-        sampler = read_video.sample_from_generator(self.frames, frame_count, n, self.r)
-        for i, frame in enumerate(read_video.concatenated_frames(sampler, self.p)):
+        sampler = read_video.SampledFrames(self.fetch_frames(), n, self.r)
+        perturbed = read_video.PerturbedFrames(sampler, self.p)
+        for i, frame in enumerate(perturbed.frames):
             filename = os.path.join(path, "{}.jpg".format(i))
             image = Image.fromarray(frame)
             image.save(filename)
-        self.cleaunup()
+        perturbed.cleanup()
+
+
+class VideoFramer(Framer):
+    def __init__(self, video_filename, r, p):
+        self.video_filename = video_filename
+        Framer.__init__(r, p)
+
+    def fetch_frames(self):
+        return read_video.VideoFrames(self.video_filename)
+
+
+class GlobFramer(Framer):
+    def __init__(self, glob, r, p):
+        self.glob = glob
+        Framer.__init__(r, p)
+
+    def fetch_frames(self):
+        return read_video.GlobFrames(self.glob)
 
 
 class FramerPipeline(Pipeline):
