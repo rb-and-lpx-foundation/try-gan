@@ -134,6 +134,7 @@ class ConcatenatePerturber(Perturber):
         perturbed = self.perturber.perturb(image)
         return np.concatenate([image, perturbed], axis=1)
 
+
 class MaybePerturber(Perturber):
     def __init__(self, perturber: Perturber, prob, r: np.random.RandomState):
         self.perturber = perturber
@@ -146,9 +147,11 @@ class MaybePerturber(Perturber):
         else:
             return self.perturber.perturb(image)
 
+
 class BlackoutPerturber(Perturber):
     def perturb(self, image):
         return np.zeros_like(image)
+
 
 class IdentityPerturber(Perturber):
     def perturb(self, image):
