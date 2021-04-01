@@ -39,7 +39,7 @@ class GlobFramer(Framer):
         Framer.__init__(self, r, p)
 
     def fetch_frames(self):
-        return read_video.GlobFrames(self.glob)
+        return read_video.GlobFrames(self.glob, 8)
 
 
 class FramerPipeline(Pipeline):
