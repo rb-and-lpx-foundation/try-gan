@@ -101,3 +101,6 @@ class GlobFrames(Frames):
                 yield open_image_file(name)
 
         Frames.__init__(self, frames_from_glob(), len(names), fps)
+
+    def cleanup(self):
+        pass
