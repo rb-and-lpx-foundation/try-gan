@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 from try_gan import normalize
-from try_gan.image_files import make_square
+from try_gan.image_files import make_square, rgb2gray
 
 
 def gauss_noise(image, r: np.random.RandomState, mu=0.0, sigma=0.05):
@@ -156,3 +156,8 @@ class BlackoutPerturber(Perturber):
 class IdentityPerturber(Perturber):
     def perturb(self, image):
         return image
+
+
+class GrayPerturber(Perturber):
+    def perturb(self, image):
+        return rgb2gray(image)
