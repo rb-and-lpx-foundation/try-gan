@@ -58,13 +58,19 @@ class Logger:
         if filename is None:
             filename = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
         path = os.path.join(log_dir, fit_dir)
-        filename - os.path.join(path, filename)
+        filename = os.path.join(path, filename)
         self.summary_writer = tf.summary.create_file_writer(filename)
 
 
 class Checkpoint:
     def __init__(
-        self, generator_optimizer, discriminator_optimizer, generator, discriminator, checkpoint_dir="./training_checkpoints", prefix="chkpt"
+        self,
+        generator_optimizer,
+        discriminator_optimizer,
+        generator,
+        discriminator,
+        checkpoint_dir="./training_checkpoints",
+        prefix="chkpt",
     ):
         self.checkpoint_prefix = os.path.abspath(os.path.join(checkpoint_dir, prefix))
         self.checkpoint = tf.train.Checkpoint(
@@ -85,7 +91,7 @@ class Pix2pix:
     loss_object = tf.keras.losses.BinaryCrossentropy(from_logits=True)
     logger = Logger()
 
-    def __init__(self):
+    def __init__(self, checkpoint_dir="./training_checkpoints", prefix="chkpt"):
         self.generator_optimizer = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
         self.discriminator_optimizer = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
         self.generator = self.Generator()
@@ -95,6 +101,8 @@ class Pix2pix:
             self.discriminator_optimizer,
             self.generator,
             self.discriminator,
+            checkpoint_dir=checkpoint_dir,
+            prefix=prefix,
         )
 
     def Generator(self):
@@ -193,6 +201,17 @@ class Pix2pix:
 
         return tf.keras.Model(inputs=[inp, tar], outputs=last)
 
+    def discriminator_loss(self, disc_real_output, disc_generated_output):
+        real_loss = self.loss_object(tf.ones_like(disc_real_output), disc_real_output)
+
+        generated_loss = self.loss_object(
+            tf.zeros_like(disc_generated_output), disc_generated_output
+        )
+
+        total_disc_loss = real_loss + generated_loss
+
+        return total_disc_loss
+
     @tf.function
     def train_step(self, input_image, target, epoch):
         with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
@@ -228,7 +247,7 @@ class Pix2pix:
             tf.summary.scalar("gen_l1_loss", gen_l1_loss, step=epoch)
             tf.summary.scalar("disc_loss", disc_loss, step=epoch)
 
-    def fit(self, epochs, pipeline, starting_epoch=0, cb=lambda: None):
+    def fit(self, epochs, pipeline, starting_epoch=0, cb=(lambda test_ds, epoch: None)):
         for i in range(epochs):
             epoch = starting_epoch + i
             train_ds = pipeline.make_train()
@@ -236,7 +255,7 @@ class Pix2pix:
 
             start = time.time()
 
-            cb()
+            cb(test_ds, epoch)
 
             # Train
             for n, (input_image, target) in train_ds.enumerate():
@@ -246,10 +265,6 @@ class Pix2pix:
                 self.train_step(input_image, target, epoch)
 
             print()
-
-            # saving (checkpoint) the model every 20 epochs
-        #         if (epoch + 1) % 20 == 0:
-        #             checkpoint.save(file_prefix = checkpoint_prefix)
 
         self.check.save()
         print(
