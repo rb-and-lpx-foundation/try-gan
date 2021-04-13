@@ -44,14 +44,23 @@ class WrappedFrames(Frames):
         self._frames_impl.cleanup()
 
 
-class PerturbedFrames(WrappedFrames):
+class TransformedFrames(WrappedFrames):
+    def __init__(self, frames_impl: Frames, transform):
+        self.transform = transform
+
+        def get_frames(frames):
+            return map(transform, frames)
+
+        WrappedFrames.__init__(self, frames_impl, get_frames)
+
+
+class PerturbedFrames(TransformedFrames):
     def __init__(self, frames_impl: Frames, perturber: Perturber):
         self.perturber = perturber
 
-        def get_frames(frames):
-            return map(perturber.perturb, frames)
-
-        WrappedFrames.__init__(self, frames_impl, get_frames)
+        TransformedFrames.__init__(
+            self, frames_impl, lambda frame: self.perturber.perturb(frame)
+        )
 
 
 class SampledFrames(WrappedFrames):
