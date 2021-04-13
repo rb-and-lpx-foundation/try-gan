@@ -20,7 +20,7 @@ def show_frames(frames: read_video.Frames, first_frame, n=10):
 
 
 def show_sampled_frames(frames: read_video.Frames, r: np.random.RandomState, n=10):
-    samples = read_video.sample_from_generator(frames, n, r)
+    samples = read_video.SampledFrames(frames, n, r)
     frame = None
     for frame in samples.frames:
         plt.figure()
