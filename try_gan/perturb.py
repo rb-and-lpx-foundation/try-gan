@@ -126,6 +126,21 @@ class ToSquarePerturber(Perturber):
         return make_square(image, self.dim)
 
 
+class TrimPerturber(ToSquarePerturber):
+    def __init__(self, dim):
+        ToSquarePerturber.__init__(self, dim)
+
+    def perturb(self, image):
+        m, n = image.shape[0], image.shape[1]
+        k = (n - m) // 2
+        if n > m:
+            image = image[:, k:-k, :]
+        else:
+            k = -k
+            image = image[k:-k, :, :]
+        return ToSquarePerturber.perturb(self, image)
+
+
 class ConcatenatePerturber(Perturber):
     def __init__(self, perturber: Perturber):
         self.perturber = perturber
