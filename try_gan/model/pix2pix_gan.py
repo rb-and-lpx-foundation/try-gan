@@ -72,6 +72,7 @@ class Checkpoint:
         checkpoint_dir="./training_checkpoints",
         prefix="chkpt",
     ):
+        self.checkpoint_dir = os.path.abspath(checkpoint_dir)
         self.checkpoint_prefix = os.path.abspath(os.path.join(checkpoint_dir, prefix))
         self.checkpoint = tf.train.Checkpoint(
             generator_optimizer=generator_optimizer,
@@ -82,6 +83,9 @@ class Checkpoint:
 
     def save(self):
         self.checkpoint.save(file_prefix=self.checkpoint_prefix)
+
+    def restore(self):
+        self.checkpoint.restore(tf.train.latest_checkpoint(self.checkpoint_dir))
 
 
 class Pix2pix:
