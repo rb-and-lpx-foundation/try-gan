@@ -26,3 +26,8 @@ class PipelinePipeline(Pipeline):
     def make_datasets(self):
         self.move_to_next()
         return self.make_train(move_next=False), self.make_test(move_next=False)
+
+    def set_batch_size(self, batch_size):
+        Pipeline.set_batch_size(self, batch_size)
+        for p in self.pipelines:
+            p.set_batch_size(batch_size)
