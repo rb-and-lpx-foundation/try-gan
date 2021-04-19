@@ -68,3 +68,6 @@ class Pipeline:
 
     def make_datasets(self):
         return self.make_train(), self.make_test()
+
+    def set_batch_size(self, batch_size):
+        self.BATCH_SIZE = batch_size

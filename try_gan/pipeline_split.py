@@ -11,3 +11,8 @@ class SplitPipeline(Pipeline):
 
     def make_test(self):
         return self.test_pipeline.make_test()
+
+    def set_batch_size(self, batch_size):
+        Pipeline.set_batch_size(self, batch_size)
+        self.train_pipeline.set_batch_size(batch_size)
+        self.test_pipeline.set_batch_size(batch_size)
