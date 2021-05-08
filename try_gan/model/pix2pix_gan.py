@@ -64,16 +64,39 @@ class Logger:
 
 class Checkpoint:
     def __init__(
+        self, location=None, checkpoint_dir="training_checkpoints", prefix="chkpt"
+    ):
+        if location is not None:
+            checkpoint_dir = location.checkpoint_dir
+            prefix = location.prefix
+        self.checkpoint_dir = os.path.abspath(checkpoint_dir)
+        self.prefix = prefix
+
+    @property
+    def checkpoint_prefix(self):
+        return os.path.abspath(os.path.join(self.checkpoint_dir, self.prefix))
+
+    def save(self):
+        raise NotImplementedError("To be implemented")
+
+    def restore(self):
+        raise NotImplementedError("To be implemented")
+
+
+class Pix2pixCheckpoint(Checkpoint):
+    def __init__(
         self,
         generator_optimizer,
         discriminator_optimizer,
         generator,
         discriminator,
-        checkpoint_dir="./training_checkpoints",
+        location=None,
+        checkpoint_dir="training_checkpoints",
         prefix="chkpt",
     ):
-        self.checkpoint_dir = os.path.abspath(checkpoint_dir)
-        self.checkpoint_prefix = os.path.abspath(os.path.join(checkpoint_dir, prefix))
+        Checkpoint.__init__(
+            self, location=location, checkpoint_dir=checkpoint_dir, prefix=prefix
+        )
         self.checkpoint = tf.train.Checkpoint(
             generator_optimizer=generator_optimizer,
             discriminator_optimizer=discriminator_optimizer,
@@ -93,20 +116,21 @@ class Pix2pix:
     LAMBDA = 100
 
     loss_object = tf.keras.losses.BinaryCrossentropy(from_logits=True)
-    logger = Logger()
 
-    def __init__(self, checkpoint_dir="./training_checkpoints", prefix="chkpt"):
+    def __init__(self, check=None, logger=None):
         self.generator_optimizer = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
         self.discriminator_optimizer = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
         self.generator = self.Generator()
         self.discriminator = self.Discriminator()
-        self.check = Checkpoint(
+        if logger is None:
+            logger = Logger()
+        self.logger = logger
+        self.check = Pix2pixCheckpoint(
             self.generator_optimizer,
             self.discriminator_optimizer,
             self.generator,
             self.discriminator,
-            checkpoint_dir=checkpoint_dir,
-            prefix=prefix,
+            location=check,
         )
 
     def Generator(self):
