@@ -1,6 +1,5 @@
-numpy==1.18.5
 opencv-python==4.5.1.48
-tensorflow==2.3.1
+tensorflow==2.8.0
 jedi==0.17.2
 jupyter
 environment_kernels
