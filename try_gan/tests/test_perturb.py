@@ -128,7 +128,7 @@ class TestPerturb(unittest.TestCase):
         actual = Fixture().make_image()
         self.assertAlmostEqual(0, norm(expected - actual))
 
-    def test_discetizer(self):
+    def test_discretizer(self):
         p = perturb.Discretizer()
         actual = p.perturb(self.normalized)
         expected = self.image

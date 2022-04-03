@@ -20,6 +20,7 @@ class FramesFromFixture(read_video.Frames):
     def cleanup(self):
         self.has_cleanedup = True
 
+
 class TestReadVideo(unittest.TestCase):
     def setUp(self):
         self.test_frames = FramesFromFixture()
@@ -31,6 +32,7 @@ class TestReadVideo(unittest.TestCase):
         def generator():
             for i in range(n):
                 yield i * i
+
         return generator
 
     def make_perturber(self, r):
@@ -130,7 +132,9 @@ class TestReadVideo(unittest.TestCase):
         f = Fixture()
         digits = f.make_test_digits()
         g = os.path.join(f.all_four, "*.png")
-        glob_frames = read_video.GlobFrames(g, 35.0, open_image_file=image_files.open_png)
+        glob_frames = read_video.GlobFrames(
+            g, 35.0, open_image_file=image_files.open_png
+        )
 
         self.assertEqual(4, glob_frames.frame_count)
         self.assertEqual(35.0, glob_frames.fps)

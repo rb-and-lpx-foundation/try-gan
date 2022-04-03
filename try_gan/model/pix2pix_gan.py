@@ -64,11 +64,12 @@ class Logger:
 
 class Checkpoint:
     def __init__(
-        self, location=None, checkpoint_dir="training_checkpoints", prefix="chkpt"
+        self, checkpoint_dir=None, prefix=None
     ):
-        if location is not None:
-            checkpoint_dir = location.checkpoint_dir
-            prefix = location.prefix
+        if checkpoint_dir is None:
+            checkpoint_dir = "training_checkpoints"
+        if prefix is None:
+            prefix = "chkpt"
         self.checkpoint_dir = os.path.abspath(checkpoint_dir)
         self.prefix = prefix
 
@@ -90,12 +91,11 @@ class Pix2pixCheckpoint(Checkpoint):
         discriminator_optimizer,
         generator,
         discriminator,
-        location=None,
         checkpoint_dir="training_checkpoints",
         prefix="chkpt",
     ):
         Checkpoint.__init__(
-            self, location=location, checkpoint_dir=checkpoint_dir, prefix=prefix
+            self, checkpoint_dir=checkpoint_dir, prefix=prefix
         )
         self.checkpoint = tf.train.Checkpoint(
             generator_optimizer=generator_optimizer,
@@ -125,12 +125,15 @@ class Pix2pix:
         if logger is None:
             logger = Logger()
         self.logger = logger
-        self.check = Pix2pixCheckpoint(
+        self.check = self.make_check(check)
+
+    def make_check(self, checkpoint_dir=None):
+        return Pix2pixCheckpoint(
             self.generator_optimizer,
             self.discriminator_optimizer,
             self.generator,
             self.discriminator,
-            location=check,
+            checkpoint_dir=checkpoint_dir,
         )
 
     def Generator(self):

@@ -94,6 +94,14 @@ class VideoFrames(Frames):
 
         Frames.__init__(self, get_frames(), frame_count, fps)
 
+    @property
+    def width(self):
+        return int(self.vidcap.get(cv2.cv2.CAP_PROP_FRAME_WIDTH))
+
+    @property
+    def height(self):
+        return int(self.vidcap.get(cv2.cv2.CAP_PROP_FRAME_HEIGHT))
+
     def cleanup(self):
         if self.in_use:
             self.vidcap.release()

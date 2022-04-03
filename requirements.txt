@@ -1,4 +1,5 @@
-opencv-python==4.5.1.48
+numpy~=1.20
+opencv-python~=4.5
 tensorflow==2.8.0
 jedi==0.17.2
 jupyter
