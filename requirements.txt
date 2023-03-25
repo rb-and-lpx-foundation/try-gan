@@ -1,8 +1,8 @@
 numpy~=1.20
 opencv-python~=4.5
+protobuf==3.20
 tensorflow==2.8.0
-jedi==0.17.2
 jupyter
 environment_kernels
-pydot==1.4.1
-matplotlib==3.3.4
+pydot
+matplotlib
