@@ -17,7 +17,7 @@ forbid_publish()
 
 setup(
     name="try_gan",
-    version="0.0.1",
+    version="0.1.1",
     author="Reuben Brasher",
     install_requires=[],
     packages=find_packages(),
